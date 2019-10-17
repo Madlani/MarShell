@@ -46,7 +46,7 @@ int sh( int argc, char **argv, char **envp )
 
 /* print your prompt */
 
-  cwd = getcwd();
+  char *cwd = getcwd(NULL, 0);
 
   printf("%s[%s]> ", prompt , cwd );
 
@@ -99,9 +99,9 @@ char *which(char *command, struct pathelement *pathlist )
 {
   while (pathlist) 
   {     
-    sprintf(cmd, "%s/gcc", pathlist->element);
-    if (access(cmd, F_OK) == 0)
-      printf("[%s]\n", cmd);
+    sprintf(command, "%s/gcc", pathlist->element);
+    if (access(command, F_OK) == 0)
+      printf("[%s]\n", command);
     pathlist = pathlist->next;
   }
 
@@ -110,16 +110,16 @@ char *which(char *command, struct pathelement *pathlist )
 
 }
 
-char *environmentPath = getenv(PATH);
+//char *environmentPath = getenv(PATH);
 
 char *where(char *command, struct pathelement *pathlist )
 {
   /* similarly loop through finding all locations of command */
   while (pathlist) 
   {
-    sprintf(cmd, "%s/gcc", pathlist->element);
-    if (access(cmd, F_OK) == 0)
-      printf("[%s]\n", cmd);
+    sprintf(command, "%s/gcc", pathlist->element);
+    if (access(command, F_OK) == 0)
+      printf("[%s]\n", command);
     pathlist = pathlist->next;
   }
 } 
@@ -132,7 +132,7 @@ void list ( char *dir )
   the directory passed */
 } /* list() */
 
-void exit (){
+void exitShell (){
   exit(0);
 }
 
@@ -142,4 +142,14 @@ void exec(){
 
 void prompt(){
   
+}
+
+//If length isn't used, scrap it.
+int getInput(char *strBuffer){
+  int length = 0;
+  if (fgets(strBuffer, BUFFERSIZE, stdin)!= 0){
+    length = strlen(buffer);
+    buffer[length - 1] = '\0';
+  } 
+  return length;
 }

@@ -9,3 +9,4 @@ void printenv(char **envp);
 
 #define PROMPTMAX 32
 #define MAXARGS 10
+#define BUFFERSIZE 256
