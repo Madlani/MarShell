@@ -158,3 +158,35 @@ int getInput(char *strBuffer){
   } 
   return length;
 }
+
+char **inputToArray(char *input, char **argv, int *argsCount){
+  int count = 0;
+  char buff[BUFFERSIZE] = "";
+  strcpy(buff, input);
+
+  char *inputAsArray = strtok(buff, " ");
+
+  while(strtok(NULL, " ")){
+    count++;
+  }
+
+  argv = malloc((count+1)*sizeof(char *));
+  argv[count] = NULL;
+
+  count = 0;
+  strcpy(buff, input);
+
+  inputAsArray = strtok(buff, " ");
+
+  while (inputAsArray){
+    int len = strlen(inputAsArray);
+    argv[count] = (char *)malloc((len + 1) * sizeof(char *));
+    strcpy(argv[count], inputAsArray);
+    count++;
+    *argsCount = count;
+    inputAsArray = strtok(NULL, " ");
+    }
+    return argv;
+
+
+}
