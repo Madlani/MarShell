@@ -7,6 +7,12 @@ char *where(char *command, struct pathelement *pathlist);
 void list ( char *dir );
 void printenv(char **envp);
 
+//void exitShell ();
+void exec();
+void prompt();
+
+int getInput(char *strBuffer);
+
 #define PROMPTMAX 32
 #define MAXARGS 10
 #define BUFFERSIZE 256

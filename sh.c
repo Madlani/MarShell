@@ -49,6 +49,8 @@ int sh( int argc, char **argv, char **envp )
   char *cwd = getcwd(NULL, 0);
 
   printf("%s[%s]> ", prompt , cwd );
+  getInput(commandline);
+  //use strtok to break into array, then select the [0]
 
 
 //----------------------------------------------------------------------------
@@ -57,20 +59,25 @@ int sh( int argc, char **argv, char **envp )
 
     /* check for each built in command and implement */
 
-    if (strcmp(command,"which") == 0){
-      //fill in code for this command
+    if (strcmp(commandline,"which") == 0){
+      //fill in code for this commandline
     }
 
-    else if (strcmp(command,"where") == 0){
-      //fill in code for this command
+    else if (strcmp(commandline,"where") == 0){
+      //fill in code for this commandline
     }
 
-    else if (strcmp(command,"list") == 0){
-      //fill in code for this command
+    else if (strcmp(commandline,"list") == 0){
+      //fill in code for this commandline
     }
 
-    else if (strcmp(command,"printenv") == 0){
-      //fill in code for this command
+    else if (strcmp(commandline,"printenv") == 0){
+      //fill in code for this commandline
+    }
+
+    
+    else if (strcmp(commandline,"exit") == 0){
+      go = 0;
     }
 
     else{
@@ -132,9 +139,7 @@ void list ( char *dir )
   the directory passed */
 } /* list() */
 
-void exitShell (){
-  exit(0);
-}
+
 
 void exec(){
 
@@ -148,8 +153,8 @@ void prompt(){
 int getInput(char *strBuffer){
   int length = 0;
   if (fgets(strBuffer, BUFFERSIZE, stdin)!= 0){
-    length = strlen(buffer);
-    buffer[length - 1] = '\0';
+    length = strlen(strBuffer);
+    strBuffer[length - 1] = '\0';
   } 
   return length;
 }
