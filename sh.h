@@ -10,7 +10,7 @@ void printenv(char **envp);
 //void exitShell ();
 void exec();
 void prompt();
-char **inputToArray(char *input, char **argv, int argsCount);
+char **inputToArray(char *input, char **argv, int *argsCount);
 void cd(char* cdLoc);
 
 int getInput(char *strBuffer);

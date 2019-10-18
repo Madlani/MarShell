@@ -13,17 +13,21 @@
 
 int sh( int argc, char **argv, char **envp )
 {
-  char *prompt = calloc(PROMPTMAX, sizeof(char));
-  char *commandline = calloc(MAX_CANON, sizeof(char));
   char *command, *arg, *commandpath, *p, *pwd, *owd;
-  char **args = calloc(MAXARGS, sizeof(char*));
-  int uid, i, status, argsct, go = 1;
+  int i, status, argsct;
+
+  //Using these variables---------------------------------------------
+  char *commandline = calloc(MAX_CANON, sizeof(char)); //commandline, read in & split into args
+  char **args; //array of commandline split into its parts
+  int argsCount; //going to be size of the args array, used in cd
+
+  struct pathelement *pathlist; //used in which/where to see if built in commands are there
+  pathlist = get_path();   /* Put PATH into a linked list */
+
+
+  int uid; //used below to get the homedir set
   struct passwd *password_entry;
   char *homedir;
-  struct pathelement *pathlist;
-  int argsCount;
-  
-
   uid = getuid();
   password_entry = getpwuid(uid);               /* get passwd info */
   homedir = password_entry->pw_dir;		/* Home directory to start out with*/
@@ -33,13 +37,17 @@ int sh( int argc, char **argv, char **envp )
     perror("getcwd");
     exit(2);
   }
+
+  char *prompt = calloc(PROMPTMAX, sizeof(char)); //gets printed every line, change with "prompt" command
+
   owd = calloc(strlen(pwd) + 1, sizeof(char));
   memcpy(owd, pwd, strlen(pwd));
   prompt[0] = ' '; prompt[1] = '\0';
 
-  /* Put PATH into a linked list */
-  pathlist = get_path();
 
+
+
+  int go = 1; //used to loop, exit changed this to 0
   while ( go )
   {
 
@@ -50,11 +58,11 @@ int sh( int argc, char **argv, char **envp )
   char *cwd = getcwd(NULL, 0);
 
   printf("%s[%s]> ", prompt , cwd );
-    printf("\n");
-  printf(args[0]);
-    printf("\n");
-  printf(args[1]);
-  printf("\n");
+  //   printf("\n");
+  // printf(args[0]);
+  //   printf("\n");
+  // printf(args[1]);
+  // printf("\n");
   // while(pathlist){
   //   printf(pathlist->element);
   //   printf("\n");
@@ -64,7 +72,7 @@ int sh( int argc, char **argv, char **envp )
   getInput(commandline);
   //use strtok to break into array, then select the [0]
 
-  args = inputToArray(commandline, argv, argc);
+  args = inputToArray(commandline, argv, &argsCount);
 
 
 //----------------------------------------------------------------------------
@@ -89,9 +97,11 @@ int sh( int argc, char **argv, char **envp )
 
     else if (strcmp(args[0],"cd") == 0){
       int argsCount = sizeof(args)/sizeof(char**);
+      printf("%d", argsCount);
       //printf(argsCount);
       //args[1] == ""
       if (argsCount == 1){
+        printf(args[0]);
         chdir(homedir);
         }
   // else if (cdLoc == "-"){
@@ -102,7 +112,7 @@ int sh( int argc, char **argv, char **envp )
         printf("entering else");
         char *tmpCwd = getcwd(NULL, 0);
         strcat(tmpCwd, "/");
-        printf(tmpCwd);
+        //printf(tmpCwd);
         strcat(tmpCwd, args[1]);
         chdir(tmpCwd);
       }
@@ -128,6 +138,15 @@ int sh( int argc, char **argv, char **envp )
 
     else if (strcmp(args[0],"printenv") == 0){
       printf("printenv command");
+      //fill in code for this commandline
+    }
+    
+    else if (strcmp(args[0],"prompt") == 0){
+      //*char promptBuffer = calloc(MAX_CANON, sizeof(char));
+      
+      printf("input prompt prefix: ");
+      //fgets(promptBuffer,BUFFERSIZE, stdin);
+      //strcat(promptBuffer, prompt);
       //fill in code for this commandline
     }
 
@@ -254,7 +273,10 @@ int getInput(char *strBuffer){
   return length;
 }
 
-char **inputToArray(char *input, char **argv, int argsCount){
+
+//*argv array is used to store arguments for the command passed in, i.e. index 0 = command, 
+//index 1+ = args for that command
+char **inputToArray(char *input, char **argv, int *argsCount){
   int count = 0;
   char buff[BUFFERSIZE] = "";
   strcpy(buff, input);
@@ -279,7 +301,7 @@ char **inputToArray(char *input, char **argv, int argsCount){
     strcpy(argv[count], temp);
     //free(argv[count]);
     count++;
-    argsCount = count;
+    *argsCount = count;
     temp = strtok(NULL, " ");
     }
     //char **argvTemp = argv;
