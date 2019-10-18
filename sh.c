@@ -50,6 +50,11 @@ int sh( int argc, char **argv, char **envp )
   char *cwd = getcwd(NULL, 0);
 
   printf("%s[%s]> ", prompt , cwd );
+    printf("\n");
+  printf(args[0]);
+    printf("\n");
+  printf(args[1]);
+  printf("\n");
   // while(pathlist){
   //   printf(pathlist->element);
   //   printf("\n");
@@ -84,18 +89,22 @@ int sh( int argc, char **argv, char **envp )
 
     else if (strcmp(args[0],"cd") == 0){
       int argsCount = sizeof(args)/sizeof(char**);
+      //printf(argsCount);
       //args[1] == ""
       if (argsCount == 1){
-        chdir(password_entry->pw_dir);
+        chdir(homedir);
         }
   // else if (cdLoc == "-"){
   //   char* prevDir = pwd
   //   chdir("-");
   // }
       else{
-        strcat(cwd, "/");
-        strcat(cwd, args[1]);
-        chdir(cwd);
+        printf("entering else");
+        char *tmpCwd = getcwd(NULL, 0);
+        strcat(tmpCwd, "/");
+        printf(tmpCwd);
+        strcat(tmpCwd, args[1]);
+        chdir(tmpCwd);
       }
     }
 
