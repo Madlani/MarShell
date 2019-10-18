@@ -76,14 +76,12 @@ int sh( int argc, char **argv, char **envp )
     }
 
     else if (strcmp(args[0],"cd") == 0){
-      //fill in code for this commandline
-    }
+      cd(args[1]);
+        }
 
     else if (strcmp(args[0],"pwd") == 0){
       //fill in code for this commandline
     }
-
-
 
     else if (strcmp(args[0],"list") == 0){
     printf("list command");
@@ -134,12 +132,33 @@ int sh( int argc, char **argv, char **envp )
 
 char *which(char *command, struct pathelement *pathlist )
 {
+  char *tmpCmd = malloc(256 * sizeof(char*));
+  struct pathelement *tmpPath = pathlist;
+  strcpy(tmpCmd, command);
   while (pathlist) 
-  {     
-    sprintf(command, "%s/gcc", pathlist->element);
-    if (access(command, F_OK) == 0)
-      printf("[%s]\n", command);
-    pathlist = pathlist->next;
+  {
+    if (command != NULL)
+    {
+      sprintf(tmpCmd, "%s/%s", pathlist->element, command);
+      if (access(tmpCmd, F_OK) == 0)
+      {
+        printf("%s\n", tmpCmd);
+        char *tmp = tmpCmd;
+        free(tmpCmd);
+        return tmp;
+      }
+      else if (access(tmpCmd, F_OK) != 0 && tmpPath -> next == NULL){
+        free(tmpCmd);
+        break;
+      }
+    tmpPath = tmpPath->next;
+
+    }
+
+    else{
+      return NULL;
+    }     
+
   }
 
    /* loop through pathlist until finding command and return it.  Return
@@ -217,6 +236,31 @@ char **inputToArray(char *input, char **argv, int argsCount){
     temp = strtok(NULL, " ");
     }
     return argv;
+
+
+}
+
+void cd(char* cdLoc){
+  struct passwd *password_entry;
+  char* homedir;
+  int uid = getuid();
+  password_entry = getpwuid(uid);               /* get passwd info */
+  homedir = password_entry->pw_dir;
+
+  char *cwd = getcwd(NULL, 0);
+
+  if (cdLoc == ""){
+    chdir(password_entry->pw_dir);
+  }
+  // else if (cdLoc == "-"){
+  //   char* prevDir = pwd
+  //   chdir("-");
+  // }
+  else{
+    strcat(cwd, "/");
+    strcat(cwd, cdLoc);
+    chdir(cwd);
+  }
 
 
 }
