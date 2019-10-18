@@ -21,11 +21,12 @@ int sh( int argc, char **argv, char **envp )
   struct passwd *password_entry;
   char *homedir;
   struct pathelement *pathlist;
+  int argsCount;
+  
 
   uid = getuid();
   password_entry = getpwuid(uid);               /* get passwd info */
-  homedir = password_entry->pw_dir;		/* Home directory to start
-						  out with*/
+  homedir = password_entry->pw_dir;		/* Home directory to start out with*/
      
   if ( (pwd = getcwd(NULL, PATH_MAX+1)) == NULL )
   {
@@ -49,6 +50,12 @@ int sh( int argc, char **argv, char **envp )
   char *cwd = getcwd(NULL, 0);
 
   printf("%s[%s]> ", prompt , cwd );
+  // while(pathlist){
+  //   printf(pathlist->element);
+  //   printf("\n");
+  //   pathlist = pathlist->next;
+  // }
+  //printf(pathlist);
   getInput(commandline);
   //use strtok to break into array, then select the [0]
 
@@ -76,8 +83,21 @@ int sh( int argc, char **argv, char **envp )
     }
 
     else if (strcmp(args[0],"cd") == 0){
-      cd(args[1]);
+      int argsCount = sizeof(args)/sizeof(char**);
+      //args[1] == ""
+      if (argsCount == 1){
+        chdir(password_entry->pw_dir);
         }
+  // else if (cdLoc == "-"){
+  //   char* prevDir = pwd
+  //   chdir("-");
+  // }
+      else{
+        strcat(cwd, "/");
+        strcat(cwd, args[1]);
+        chdir(cwd);
+      }
+    }
 
     else if (strcmp(args[0],"pwd") == 0){
       //fill in code for this commandline
@@ -128,9 +148,9 @@ int sh( int argc, char **argv, char **envp )
 
 
 //-----------------------------------------------------------------------------
-//Commands below
+//Done Commands below
 
-char *which(char *command, struct pathelement *pathlist )
+char *where(char *command, struct pathelement *pathlist )
 {
   char *tmpCmd = malloc(256 * sizeof(char*));
   struct pathelement *tmpPath = pathlist;
@@ -139,7 +159,7 @@ char *which(char *command, struct pathelement *pathlist )
   {
     if (command != NULL)
     {
-      sprintf(tmpCmd, "%s/%s", pathlist->element, command);
+      sprintf(tmpCmd, "%s/%s", tmpPath->element, command);
       if (access(tmpCmd, F_OK) == 0)
       {
         printf("%s\n", tmpCmd);
@@ -154,31 +174,48 @@ char *which(char *command, struct pathelement *pathlist )
     tmpPath = tmpPath->next;
 
     }
-
-    else{
+  }
       return NULL;
-    }     
-
   }
 
+  char *which(char *command, struct pathelement *pathlist )
+{
+  char *tmpCmd = malloc(256 * sizeof(char*));
+  struct pathelement *tmpPath = pathlist;
+  strcpy(tmpCmd, command);
+  while (pathlist) 
+  {
+    if (command != NULL)
+    {
+      sprintf(tmpCmd, "%s/%s", tmpPath->element, command);
+      if (access(tmpCmd, F_OK) == 0)
+      {
+        printf("%s\n", tmpCmd);
+        char *tmp = tmpCmd;
+        free(tmpCmd);
+        return tmp;
+      }
+      else if (access(tmpCmd, F_OK) != 0 && tmpPath -> next == NULL){
+        free(tmpCmd);
+        break;
+      }
+    tmpPath = tmpPath->next;
+
+    }
+  }
+      return NULL;
+  }
+  
+  //---------------------------------------------------------------------------------------------------------------------------------
+
+
+  
    /* loop through pathlist until finding command and return it.  Return
    NULL when not found. */
 
-}
 
-//char *environmentPath = getenv(PATH);
 
-char *where(char *command, struct pathelement *pathlist )
-{
-  /* similarly loop through finding all locations of command */
-  while (pathlist) 
-  {
-    sprintf(command, "%s/gcc", pathlist->element);
-    if (access(command, F_OK) == 0)
-      printf("[%s]\n", command);
-    pathlist = pathlist->next;
-  }
-} 
+
 
 
 
@@ -231,36 +268,85 @@ char **inputToArray(char *input, char **argv, int argsCount){
     int len = strlen(temp);
     argv[count] = (char *)malloc((len + 1) * sizeof(char *));
     strcpy(argv[count], temp);
+    //free(argv[count]);
     count++;
     argsCount = count;
     temp = strtok(NULL, " ");
     }
+    //char **argvTemp = argv;
+    //free(argv);
     return argv;
 
 
 }
 
-void cd(char* cdLoc){
-  struct passwd *password_entry;
-  char* homedir;
-  int uid = getuid();
-  password_entry = getpwuid(uid);               /* get passwd info */
-  homedir = password_entry->pw_dir;
+// void cd(char* cdLoc){
+//   struct passwd *password_entry;
+//   char* homedir;
+//   int uid = getuid();
+//   password_entry = getpwuid(uid);               /* get passwd info */
+//   homedir = password_entry->pw_dir;
 
-  char *cwd = getcwd(NULL, 0);
+//   char *cwd = getcwd(NULL, 0);
 
-  if (cdLoc == ""){
-    chdir(password_entry->pw_dir);
-  }
-  // else if (cdLoc == "-"){
-  //   char* prevDir = pwd
-  //   chdir("-");
-  // }
-  else{
-    strcat(cwd, "/");
-    strcat(cwd, cdLoc);
-    chdir(cwd);
-  }
+//   if (cdLoc == ""){
+//     chdir(password_entry->pw_dir);
+//   }
+//   // else if (cdLoc == "-"){
+//   //   char* prevDir = pwd
+//   //   chdir("-");
+//   // }
+//   else{
+//     strcat(cwd, "/");
+//     strcat(cwd, cdLoc);
+//     chdir(cwd);
+//   }
+// }
 
+//Junk code
+//-----------------------------------------------------------------------------------------------------------
+// char *which(char *command, struct pathelement *pathlist )
+// {
+//   char *tmpCmd = malloc(1024 * sizeof(char*));
+//   struct pathelement *tmpPath = pathlist;
+//   strcpy(tmpCmd, command);
+//   while (pathlist) 
+//   {
+//     if (command != NULL)
+//     {
+//       sprintf(tmpCmd, "%s/%s", tmpPath->element, command);
+//       if (access(tmpCmd, F_OK) == 0)
+//       {
+//         printf("%s\n", tmpCmd);
+//         char *tmp = tmpCmd;
+//         free(tmpCmd);
+//         return tmp;
+//       }
+//       else if (access(tmpCmd, F_OK) != 0 && tmpPath -> next == NULL){
+//         free(tmpCmd);
+//         break;
+//       }
+//     tmpPath = tmpPath->next;
 
-}
+//     }
+//   }
+//       return NULL;
+//   }
+//-----------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------
+//char *environmentPath = getenv(PATH);
+
+// char *where(char *command, struct pathelement *pathlist )
+// {
+//   /* similarly loop through finding all locations of command */
+//   while (pathlist) 
+//   {
+//     sprintf(command, "%s/gcc", pathlist->element);
+//     if (access(command, F_OK) == 0)
+//       printf("[%s]\n", command);
+//     pathlist = pathlist->next;
+//   }
+// } 
+//-----------------------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------
+
