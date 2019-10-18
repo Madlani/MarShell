@@ -60,21 +60,42 @@ int sh( int argc, char **argv, char **envp )
 
 
     /* check for each built in command and implement */
+//----------------------------------------------------------------------------
+//Done commands!!!
+
+//----------------------------------------------------------------------------
 
     if (strcmp(args[0],"which") == 0){
-      printf("which command");
+      which(args[1], pathlist);
       //fill in code for this commandline
     }
 
     else if (strcmp(args[0],"where") == 0){
-      printf("where command");
-
+      where(args[1], pathlist);
       //fill in code for this commandline
     }
+
+    else if (strcmp(args[0],"cd") == 0){
+      //fill in code for this commandline
+    }
+
+    else if (strcmp(args[0],"pwd") == 0){
+      //fill in code for this commandline
+    }
+
+
 
     else if (strcmp(args[0],"list") == 0){
     printf("list command");
 
+      //fill in code for this commandline
+    }
+
+    else if (strcmp(args[0],"pid") == 0){
+      //fill in code for this commandline
+    }
+
+    else if (strcmp(args[0],"kill") == 0){
       //fill in code for this commandline
     }
 
