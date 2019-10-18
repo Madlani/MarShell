@@ -52,6 +52,8 @@ int sh( int argc, char **argv, char **envp )
   getInput(commandline);
   //use strtok to break into array, then select the [0]
 
+  args = inputToArray(commandline, argv, argc);
+
 
 //----------------------------------------------------------------------------
     /* get command line and process */
@@ -59,24 +61,31 @@ int sh( int argc, char **argv, char **envp )
 
     /* check for each built in command and implement */
 
-    if (strcmp(commandline,"which") == 0){
+    if (strcmp(args[0],"which") == 0){
+      printf("which command");
       //fill in code for this commandline
     }
 
-    else if (strcmp(commandline,"where") == 0){
+    else if (strcmp(args[0],"where") == 0){
+      printf("where command");
+
       //fill in code for this commandline
     }
 
-    else if (strcmp(commandline,"list") == 0){
+    else if (strcmp(args[0],"list") == 0){
+    printf("list command");
+
       //fill in code for this commandline
     }
 
-    else if (strcmp(commandline,"printenv") == 0){
+    else if (strcmp(args[0],"printenv") == 0){
+      printf("printenv command");
       //fill in code for this commandline
     }
 
     
-    else if (strcmp(commandline,"exit") == 0){
+    else if (strcmp(args[0],"exit") == 0){
+      printf("exit command");
       go = 0;
     }
 
@@ -159,12 +168,12 @@ int getInput(char *strBuffer){
   return length;
 }
 
-char **inputToArray(char *input, char **argv, int *argsCount){
+char **inputToArray(char *input, char **argv, int argsCount){
   int count = 0;
   char buff[BUFFERSIZE] = "";
   strcpy(buff, input);
 
-  char *inputAsArray = strtok(buff, " ");
+  char *temp = strtok(buff, " ");
 
   while(strtok(NULL, " ")){
     count++;
@@ -176,15 +185,15 @@ char **inputToArray(char *input, char **argv, int *argsCount){
   count = 0;
   strcpy(buff, input);
 
-  inputAsArray = strtok(buff, " ");
+  temp = strtok(buff, " ");
 
-  while (inputAsArray){
-    int len = strlen(inputAsArray);
+  while (temp){
+    int len = strlen(temp);
     argv[count] = (char *)malloc((len + 1) * sizeof(char *));
-    strcpy(argv[count], inputAsArray);
+    strcpy(argv[count], temp);
     count++;
-    *argsCount = count;
-    inputAsArray = strtok(NULL, " ");
+    argsCount = count;
+    temp = strtok(NULL, " ");
     }
     return argv;
 
