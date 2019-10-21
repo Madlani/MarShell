@@ -39,10 +39,11 @@ int sh( int argc, char **argv, char **envp )
   }
 
   char *prompt = calloc(PROMPTMAX, sizeof(char)); //gets printed every line, change with "prompt" command
-
+  prompt[0] = ' '; 
+  prompt[1] = '\0';
+  
   owd = calloc(strlen(pwd) + 1, sizeof(char));
   memcpy(owd, pwd, strlen(pwd));
-  prompt[0] = ' '; prompt[1] = '\0';
 
 
 
@@ -56,8 +57,9 @@ int sh( int argc, char **argv, char **envp )
 /* print your prompt */
 
   char *cwd = getcwd(NULL, 0);
-
-  printf("%s[%s]> ", prompt , cwd );
+  
+  printf("%s[%s]>", prompt , cwd );
+  //printf("%s[%s]>", prompt , cwd );
   //   printf("\n");
   // printf(args[0]);
   //   printf("\n");
@@ -69,9 +71,10 @@ int sh( int argc, char **argv, char **envp )
   //   pathlist = pathlist->next;
   // }
   //printf(pathlist);
+  
   getInput(commandline);
   //use strtok to break into array, then select the [0]
-
+  //passing in the commandline to split, the x, and the argsCount to be updated
   args = inputToArray(commandline, argv, &argsCount);
 
 
@@ -97,11 +100,11 @@ int sh( int argc, char **argv, char **envp )
 
     else if (strcmp(args[0],"cd") == 0){
       int argsCount = sizeof(args)/sizeof(char**);
-      printf("%d", argsCount);
+      //printf("%d", argsCount);
       //printf(argsCount);
       //args[1] == ""
       if (argsCount == 1){
-        printf(args[0]);
+        //printf(args[0]);
         chdir(homedir);
         }
   // else if (cdLoc == "-"){
@@ -143,20 +146,24 @@ int sh( int argc, char **argv, char **envp )
     
     else if (strcmp(args[0],"prompt") == 0){
       //*char promptBuffer = calloc(MAX_CANON, sizeof(char));
-      
-      printf("input prompt prefix: ");
-      //fgets(promptBuffer,BUFFERSIZE, stdin);
+      printf("Please provide a prompt");
+      if(fgets(prompt,BUFFERSIZE, stdin) != NULL){
+	prompt[strlen(prompt) -1] = '\0';
+      }
+      //prompt[sizeof(prompt)/sizeof(prompt[0])] = "";
+      //strcat(prompt, "\n");
       //strcat(promptBuffer, prompt);
       //fill in code for this commandline
     }
 
     
     else if (strcmp(args[0],"exit") == 0){
-      printf("exit command");
+      printf("exit command\n");
       go = 0;
     }
 
     else{
+      printf("command not found\n");
       //code for exec
     }
 
@@ -280,16 +287,18 @@ char **inputToArray(char *input, char **argv, int *argsCount){
   int count = 0;
   char buff[BUFFERSIZE] = "";
   strcpy(buff, input);
-
   char *temp = strtok(buff, " ");
 
+//means there's more arguments, increment the amt of arguments
   while(strtok(NULL, " ")){
     count++;
   }
 
-  argv = malloc((count+1)*sizeof(char *));
-  argv[count] = NULL;
+  argv = malloc((count+2)*sizeof(char *));
+  argv[count+1] = NULL; //sets last index to the escape character to let exec know when to stop
+  
 
+  //reset the count to start adding into args
   count = 0;
   strcpy(buff, input);
 
@@ -297,18 +306,13 @@ char **inputToArray(char *input, char **argv, int *argsCount){
 
   while (temp){
     int len = strlen(temp);
-    argv[count] = (char *)malloc((len + 1) * sizeof(char *));
+    argv[count] = (char *)malloc((len + 1) * sizeof(char));
     strcpy(argv[count], temp);
-    //free(argv[count]);
     count++;
     *argsCount = count;
     temp = strtok(NULL, " ");
     }
-    //char **argvTemp = argv;
-    //free(argv);
     return argv;
-
-
 }
 
 // void cd(char* cdLoc){
@@ -380,4 +384,42 @@ char **inputToArray(char *input, char **argv, int *argsCount){
 // } 
 //-----------------------------------------------------------------------------------------------------------
 //-----------------------------------------------------------------------------------------------------------
+/*
+char **inputToArray(char *input, char **argv, int *argsCount){
+  int count = 0;
+  char buff[BUFFERSIZE] = "";
+  strcpy(buff, input);
 
+  //represents args[0], our command
+  char *temp = strtok(buff, " ");
+
+//means there's more arguments, increment the amt of arguments
+  while(strtok(NULL, " ")){
+    count++;
+  }
+
+  argv = malloc((count+1)*sizeof(char *));
+  argv[count] = NULL;
+
+  count = 0;
+  strcpy(buff, input);
+
+  temp = strtok(buff, " ");
+
+  while (temp){
+    int len = strlen(temp);
+    argv[count] = (char *)malloc((len + 1) * sizeof(char *));
+    strcpy(argv[count], temp);
+    //free(argv[count]);
+    count++;
+    *argsCount = count;
+    temp = strtok(NULL, " ");
+    }
+    //char **argvTemp = argv;
+    //free(argv);
+    return argv;
+
+
+}
+
+*/
