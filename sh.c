@@ -183,8 +183,6 @@ int sh( int argc, char **argv, char **envp )
 
     else{
       printf("command not found\n");
-      //code for exec
-    }
   }
 
 
@@ -193,7 +191,25 @@ int sh( int argc, char **argv, char **envp )
     {
        /* find it */
        /* do fork(), execve() and waitpid() */
-
+      char *absPath = where(args[0], pathlist);
+      if (absPath == NULL){
+	printf("YOUR COMMAND [%s]IS NOT FOUND. PLEASE ENTER A VALID COMMAND.\n",args[0]);
+	free(absPath);
+      }
+      else{
+	pid = fork();
+	if (pid ==0){
+	  execve(absPath, args, envp);
+	  printf("ERROR: EXIT");
+	  exit(1);
+	}
+	else{
+	  waitpid(pid, NULL, 0);
+	}
+	
+      }
+      free(absPath);
+      
       /* else */
         /* fprintf(stderr, "%s: Command not found.\n", args[0]); */
     }
@@ -281,7 +297,7 @@ void list ( char *dir )
 } /* list() */
 
 
-
+/*
 void exec(){
 
 }
@@ -289,6 +305,7 @@ void exec(){
 void prompt(){
   
 }
+*/
 
 //If length isn't used, scrap it.
 int getInput(char *strBuffer){
@@ -338,112 +355,4 @@ char **inputToArray(char *input, char **args, int *argsCount){
     }
     return args;
 }
-
-// void cd(char* cdLoc){
-//   struct passwd *password_entry;
-//   char* homedir;
-//   int uid = getuid();
-//   password_entry = getpwuid(uid);               /* get passwd info */
-//   homedir = password_entry->pw_dir;
-
-//   char *cwd = getcwd(NULL, 0);
-
-//   if (cdLoc == ""){
-//     chdir(password_entry->pw_dir);
-//   }
-//   // else if (cdLoc == "-"){
-//   //   char* prevDir = pwd
-//   //   chdir("-");
-//   // }
-//   else{
-//     strcat(cwd, "/");
-//     strcat(cwd, cdLoc);
-//     chdir(cwd);
-//   }
-// }
-
-//Junk code
-//-----------------------------------------------------------------------------------------------------------
-// char *which(char *command, struct pathelement *pathlist )
-// {
-//   char *tmpCmd = malloc(1024 * sizeof(char*));
-//   struct pathelement *tmpPath = pathlist;
-//   strcpy(tmpCmd, command);
-//   while (pathlist) 
-//   {
-//     if (command != NULL)
-//     {
-//       sprintf(tmpCmd, "%s/%s", tmpPath->element, command);
-//       if (access(tmpCmd, F_OK) == 0)
-//       {
-//         printf("%s\n", tmpCmd);
-//         char *tmp = tmpCmd;
-//         free(tmpCmd);
-//         return tmp;
-//       }
-//       else if (access(tmpCmd, F_OK) != 0 && tmpPath -> next == NULL){
-//         free(tmpCmd);
-//         break;
-//       }
-//     tmpPath = tmpPath->next;
-
-//     }
-//   }
-//       return NULL;
-//   }
-//-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------
-//char *environmentPath = getenv(PATH);
-
-// char *where(char *command, struct pathelement *pathlist )
-// {
-//   /* similarly loop through finding all locations of command */
-//   while (pathlist) 
-//   {
-//     sprintf(command, "%s/gcc", pathlist->element);
-//     if (access(command, F_OK) == 0)
-//       printf("[%s]\n", command);
-//     pathlist = pathlist->next;
-//   }
-// } 
-//-----------------------------------------------------------------------------------------------------------
-//-----------------------------------------------------------------------------------------------------------
-/*
-char **inputToArray(char *input, char **argv, int *argsCount){
-  int count = 0;
-  char buff[BUFFERSIZE] = "";
-  strcpy(buff, input);
-
-  //represents args[0], our command
-  char *temp = strtok(buff, " ");
-
-//means there's more arguments, increment the amt of arguments
-  while(strtok(NULL, " ")){
-    count++;
-  }
-
-  argv = malloc((count+1)*sizeof(char *));
-  argv[count] = NULL;
-
-  count = 0;
-  strcpy(buff, input);
-
-  temp = strtok(buff, " ");
-
-  while (temp){
-    int len = strlen(temp);
-    argv[count] = (char *)malloc((len + 1) * sizeof(char *));
-    strcpy(argv[count], temp);
-    //free(argv[count]);
-    count++;
-    *argsCount = count;
-    temp = strtok(NULL, " ");
-    }
-    //char **argvTemp = argv;
-    //free(argv);
-    return argv;
-
-
 }
-
-*/
