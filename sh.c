@@ -180,7 +180,7 @@ int sh(int argc, char **argv, char **envp)
       if (absPath == NULL)
       {
         printf("YOUR COMMAND [%s]IS NOT FOUND. PLEASE ENTER A VALID COMMAND.\n", args[0]);
-        free(absPath);
+        //free(absPath);
       }
       else
       {
@@ -196,7 +196,7 @@ int sh(int argc, char **argv, char **envp)
           waitpid(pid, NULL, 0);
         }
       }
-      free(absPath);
+      //      free(absPath);
 
       /* else */
       /* fprintf(stderr, "%s: Command not found.\n", args[0]); */
