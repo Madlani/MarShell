@@ -76,8 +76,8 @@ int sh( int argc, char **argv, char **envp )
   //use strtok to break into array, then select the [0]
   //passing in the commandline to split, the x, and the argsCount to be updated
   args = inputToArray(commandline, argv, &argsCount);
-
-
+  printf("%s\n",args[0]);
+  printf("%s\n",args[1]);
 //----------------------------------------------------------------------------
     /* get command line and process */
 
@@ -100,6 +100,9 @@ int sh( int argc, char **argv, char **envp )
 
     else if (strcmp(args[0],"cd") == 0){
       int argsCount = sizeof(args)/sizeof(char**);
+      printf("%s", "entering cd");
+      //printf(args[0]);
+      //printf(args[1]);
       //printf("%d", argsCount);
       //printf(argsCount);
       //args[1] == ""
@@ -146,10 +149,18 @@ int sh( int argc, char **argv, char **envp )
     
     else if (strcmp(args[0],"prompt") == 0){
       //*char promptBuffer = calloc(MAX_CANON, sizeof(char));
-      printf("Please provide a prompt");
+
+      /*
+	if length(args) = 1{do stuff below}
+	else call getInput(args[1])
+       */
+      printf("Please provide a prompt: ");
+      getInput(prompt);
+      /*
       if(fgets(prompt,BUFFERSIZE, stdin) != NULL){
 	prompt[strlen(prompt) -1] = '\0';
       }
+      */
       //prompt[sizeof(prompt)/sizeof(prompt[0])] = "";
       //strcat(prompt, "\n");
       //strcat(promptBuffer, prompt);
@@ -283,36 +294,40 @@ int getInput(char *strBuffer){
 
 //*argv array is used to store arguments for the command passed in, i.e. index 0 = command, 
 //index 1+ = args for that command
-char **inputToArray(char *input, char **argv, int *argsCount){
-  int count = 0;
+char **inputToArray(char *input, char **args, int *argsCount){
+  int countForEndChar = 0;
+  int countOfArgs = 0;
   char buff[BUFFERSIZE] = "";
   strcpy(buff, input);
   char *temp = strtok(buff, " ");
 
 //means there's more arguments, increment the amt of arguments
-  while(strtok(NULL, " ")){
-    count++;
+  
+  while(temp){
+    //printf("%s\n",temp);
+    countForEndChar++;
+    temp = strtok(NULL, " ");
   }
 
-  argv = malloc((count+2)*sizeof(char *));
-  argv[count+1] = NULL; //sets last index to the escape character to let exec know when to stop
+  args = malloc((countForEndChar+2)*sizeof(char *));
+  args[countForEndChar+1] = '\0';
+  //argv[count+1] = NULL; //sets last index to the escape character to let exec know when to stop
   
 
-  //reset the count to start adding into args
-  count = 0;
-  strcpy(buff, input);
+  //  input = strtok(NULL, " ");
+ strcpy(buff, input);
 
   temp = strtok(buff, " ");
 
   while (temp){
     int len = strlen(temp);
-    argv[count] = (char *)malloc((len + 1) * sizeof(char));
-    strcpy(argv[count], temp);
-    count++;
-    *argsCount = count;
+    args[countOfArgs] = (char *)malloc((len + 1) * sizeof(char));
+    strcpy(args[countOfArgs], temp);
+    countOfArgs++;
+    *argsCount = countOfArgs;
     temp = strtok(NULL, " ");
     }
-    return argv;
+    return args;
 }
 
 // void cd(char* cdLoc){
