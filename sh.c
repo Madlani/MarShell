@@ -82,8 +82,8 @@ int sh( int argc, char **argv, char **envp )
 //----------------------------------------------------------------------------
 
 
-  printf("%d\n",strcmp("hi", "hi"));
-  printf("%s\n",args[0]);
+  //printf("%d\n",strcmp("hi", "hi"));
+  //printf("%s\n",args[0]);
 
   if(command){
   
@@ -99,18 +99,29 @@ int sh( int argc, char **argv, char **envp )
 
     else if (strcmp(args[0],"cd") == 0){
       //int argsCount = sizeof(args)/sizeof(char**);
-      printf("%s", "entering cd");
+      //printf("%s", "entering cd");
 
       if (argsCount == 1){
         chdir(homedir);
       }
 
-      else{
+      else if (argsCount == 2){
+	  if(strcmp(args[1], "-") ==0){
+	    //go to preious dir
+	  }
+	  else{
+	    chdir(args[1]);
+	  }
+	  /*
         printf("entering else");
         char *tmpCwd = getcwd(NULL, 0);
         strcat(tmpCwd, "/");
         strcat(tmpCwd, args[1]);
         chdir(tmpCwd);
+	  */
+      }
+      else{
+	printf("please enter the full path you want to CD into");
       }
     }
 
