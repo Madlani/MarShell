@@ -156,8 +156,14 @@ int sh( int argc, char **argv, char **envp )
 	if length(args) = 1{do stuff below}
 	else call getInput(args[1])
        */
+      if (argsCount == 2){
+	prompt = args[1];
+      }
+      else{
       printf("Please provide a prompt: ");
       getInput(prompt);
+      }
+
       /*
       if(fgets(prompt,BUFFERSIZE, stdin) != NULL){
 	prompt[strlen(prompt) -1] = '\0';
