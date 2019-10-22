@@ -136,6 +136,7 @@ int sh( int argc, char **argv, char **envp )
     }
 
     else if (strcmp(args[0],"pid") == 0){
+      printf("%s %ld\n", "PID: ",(long)getpid());
       //fill in code for this commandline
     }
 
