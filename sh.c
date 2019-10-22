@@ -59,25 +59,18 @@ int sh( int argc, char **argv, char **envp )
   char *cwd = getcwd(NULL, 0);
   
   printf("%s[%s]>", prompt , cwd );
-  //printf("%s[%s]>", prompt , cwd );
-  //   printf("\n");
-  // printf(args[0]);
-  //   printf("\n");
-  // printf(args[1]);
-  // printf("\n");
-  // while(pathlist){
-  //   printf(pathlist->element);
-  //   printf("\n");
-  //   pathlist = pathlist->next;
-  // }
-  //printf(pathlist);
   
   getInput(commandline);
+  
   //use strtok to break into array, then select the [0]
   //passing in the commandline to split, the x, and the argsCount to be updated
   args = inputToArray(commandline, argv, &argsCount);
-  printf("%s\n",args[0]);
-  printf("%s\n",args[1]);
+  for (int i = 0; i<argsCount; i++){
+    printf("args[%d] = %s\n", i, args[i]);
+  }
+  command = args[0];
+  //printf("%s\n",args[0]);
+  //printf("%s\n",args[1]);
 //----------------------------------------------------------------------------
     /* get command line and process */
 
@@ -88,7 +81,13 @@ int sh( int argc, char **argv, char **envp )
 
 //----------------------------------------------------------------------------
 
-    if (strcmp(args[0],"which") == 0){
+
+  printf("%d\n",strcmp("hi", "hi"));
+  printf("%s\n",args[0]);
+
+  if(command){
+  
+  if (strcmp(args[0],"which") == 0){
       which(args[1], pathlist);
       //fill in code for this commandline
     }
@@ -99,26 +98,17 @@ int sh( int argc, char **argv, char **envp )
     }
 
     else if (strcmp(args[0],"cd") == 0){
-      int argsCount = sizeof(args)/sizeof(char**);
+      //int argsCount = sizeof(args)/sizeof(char**);
       printf("%s", "entering cd");
-      //printf(args[0]);
-      //printf(args[1]);
-      //printf("%d", argsCount);
-      //printf(argsCount);
-      //args[1] == ""
+
       if (argsCount == 1){
-        //printf(args[0]);
         chdir(homedir);
-        }
-  // else if (cdLoc == "-"){
-  //   char* prevDir = pwd
-  //   chdir("-");
-  // }
+      }
+
       else{
         printf("entering else");
         char *tmpCwd = getcwd(NULL, 0);
         strcat(tmpCwd, "/");
-        //printf(tmpCwd);
         strcat(tmpCwd, args[1]);
         chdir(tmpCwd);
       }
@@ -177,6 +167,7 @@ int sh( int argc, char **argv, char **envp )
       printf("command not found\n");
       //code for exec
     }
+  }
 
 
 //----------------------------------------------------------------------------
