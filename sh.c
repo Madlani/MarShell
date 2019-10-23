@@ -166,6 +166,7 @@ int sh(int argc, char **argv, char **envp)
     {
       printf("exit command\n");
       free(cwd);
+      free(commandline);
       go = 0;
     }
 
