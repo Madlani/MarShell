@@ -166,10 +166,11 @@ int sh(int argc, char **argv, char **envp)
       go = 0;
     }
 
-    /*else{
+    /*
+    else{
       printf("command not found\n");
-      }*/
-
+      }
+    */
     //----------------------------------------------------------------------------
     /*  else  program to exec */
     else 
@@ -202,6 +203,12 @@ int sh(int argc, char **argv, char **envp)
       /* fprintf(stderr, "%s: Command not found.\n", args[0]); */
     }
   }
+
+  for(int i  = argsCount - 1; i >= 0; i--){
+    free(args[i]);
+  }
+  free(args);
+  free(prompt);
     return 0;
   }
 //} /* sh() */
@@ -234,6 +241,7 @@ char *where(char *command, struct pathelement *pathlist)
       tmpPath = tmpPath->next;
     }
   }
+  free(tmpCmd);
   return NULL;
 }
 
@@ -262,6 +270,7 @@ char *which(char *command, struct pathelement *pathlist)
       tmpPath = tmpPath->next;
     }
   }
+  free(tmpCmd);
   return NULL;
 }
 
@@ -335,5 +344,7 @@ char **inputToArray(char *input, char **args, int *argsCount)
     *argsCount = countOfArgs;
     temp = strtok(NULL, " ");
   }
+  //char **tempArgs = args;
+  //free (args);
   return args;
 }
