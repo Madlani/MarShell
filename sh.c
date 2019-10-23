@@ -241,7 +241,7 @@ char *where(char *command, struct pathelement *pathlist)
       tmpPath = tmpPath->next;
     }
   }
-  free(tmpCmd);
+  //free(tmpCmd);
   return NULL;
 }
 
@@ -270,7 +270,7 @@ char *which(char *command, struct pathelement *pathlist)
       tmpPath = tmpPath->next;
     }
   }
-  free(tmpCmd);
+  //free(tmpCmd);
   return NULL;
 }
 
