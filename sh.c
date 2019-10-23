@@ -33,7 +33,9 @@ int sh(int argc, char **argv, char **envp)
 
   if ((pwd = getcwd(NULL, PATH_MAX + 1)) == NULL)
   {
+    //free(pathlist);
     perror("getcwd");
+    //free(pathlist);
     exit(2);
   }
 
@@ -163,6 +165,7 @@ int sh(int argc, char **argv, char **envp)
     else if (strcmp(args[0], "exit") == 0)
     {
       printf("exit command\n");
+      free(cwd);
       go = 0;
     }
 
@@ -209,6 +212,17 @@ int sh(int argc, char **argv, char **envp)
   }
   free(args);
   free(prompt);
+  free(owd);
+  free(pwd);
+  struct pathelement* temp = pathlist;
+  free(pathlist->element);
+  while(pathlist->next != NULL)
+    {
+      temp = pathlist;
+      pathlist = pathlist->next;
+      free(temp);
+    }
+  //free(cwd);
     return 0;
   }
 //} /* sh() */
