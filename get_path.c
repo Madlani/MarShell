@@ -19,11 +19,15 @@ struct pathelement *get_path()
   p = getenv("PATH");	/* get a pointer to the PATH env var.
 			   make a copy of it, since strtok modifies the
 			   string that it is working with... */
-  path = malloc((strlen(p)+1)*sizeof(char));	/* use malloc(3) */
-  strncpy(path, p, strlen(p));
-  path[strlen(p)] = '\0';
+  char tmpPath[strlen(p)+1];
+  strcpy(tmpPath,"");
+  tmpPath[strlen(p)] = '\0';
+  
+  //path = malloc((strlen(p)+1)*sizeof(char));	/* use malloc(3) */
+  //strncpy(path, p, strlen(p));
+  //path[strlen(p)] = '\0';
 
-  p = strtok(path, ":"); 	/* PATH is : delimited */
+  p = strtok(tmpPath, ":"); 	/* PATH is : delimited */
   do				/* loop through the PATH */
   {				/* to build a linked list of dirs */
     if ( !pathlist )		/* create head of list */
@@ -39,6 +43,15 @@ struct pathelement *get_path()
     tmp->element = p;	
     tmp->next = NULL;
   } while ( p = strtok(NULL, ":") );
-
+  
   return pathlist;
 } /* end get_path() */
+
+void freePath(struct pathelement* path)
+{
+  while(path){
+    struct pathelement* temp = path;
+    path = path->next;
+    free(temp);
+  }
+}

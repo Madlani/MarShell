@@ -18,3 +18,4 @@ struct pathelement
   struct pathelement *next;		/* pointer to next node */
 };
 
+void freePath(struct pathelement* path);
