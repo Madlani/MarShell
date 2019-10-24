@@ -123,6 +123,7 @@ int sh(int argc, char **argv, char **envp)
 
     else if (strcmp(args[0], "pwd") == 0)
     {
+      printf("%s\n", cwd);
       //fill in code for this commandline
     }
 
