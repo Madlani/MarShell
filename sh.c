@@ -49,6 +49,8 @@ int sh(int argc, char **argv, char **envp)
   int go = 1; //used to loop, exit changed this to 0
   while (go)
   {
+    // if(fgets(commandline, MAX_CANON, stdin)!= NULL){
+	
 
     //----------------------------------------------------------------------------
 
@@ -57,7 +59,7 @@ int sh(int argc, char **argv, char **envp)
     char *cwd = getcwd(NULL, 0);
 
     printf("%s[%s]>", prompt, cwd);
-
+    //    if(fgets(commandline, MAX_CANON, stdin)!=NULL){
     getInput(commandline);
 
     //use strtok to break into array, then select the [0]
@@ -223,13 +225,13 @@ int sh(int argc, char **argv, char **envp)
       pathlist = pathlist->next;
       free(temp);
     }
-  //free(cwd);
+//}if(command)
     return 0;
-  }
-//} /* sh() */
+}//while
+}//sh()
 
 //-----------------------------------------------------------------------------
-//Done Commands below
+//Commands below
 
 char *where(char *command, struct pathelement *pathlist)
 {
@@ -300,21 +302,11 @@ void list(char *dir)
   the directory passed */
 } /* list() */
 
-/*
-void exec(){
 
-}
-
-void prompt(){
-  
-}
-*/
-
-//If length isn't used, scrap it.
 int getInput(char *strBuffer)
 {
   int length = 0;
-  if (fgets(strBuffer, BUFFERSIZE, stdin) != 0)
+  if (fgets(strBuffer, BUFFERSIZE, stdin) != NULL)
   {
     length = strlen(strBuffer);
     strBuffer[length - 1] = '\0';
