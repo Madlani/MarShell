@@ -50,7 +50,6 @@ int sh(int argc, char **argv, char **envp)
   while (go)
   {
     // if(fgets(commandline, MAX_CANON, stdin)!= NULL){
-	
 
     //----------------------------------------------------------------------------
 
@@ -179,7 +178,7 @@ int sh(int argc, char **argv, char **envp)
     */
     //----------------------------------------------------------------------------
     /*  else  program to exec */
-    else 
+    else
     {
       /* find it */
       /* do fork(), execve() and waitpid() */
@@ -208,27 +207,30 @@ int sh(int argc, char **argv, char **envp)
       /* else */
       /* fprintf(stderr, "%s: Command not found.\n", args[0]); */
     }
-  }
+  
 
-  for(int i  = argsCount - 1; i >= 0; i--){
+  for (int i = argsCount - 1; i >= 0; i--)
+  {
     free(args[i]);
   }
   free(args);
   free(prompt);
   free(owd);
   free(pwd);
-  struct pathelement* temp = pathlist;
+  struct pathelement *temp = pathlist;
   free(pathlist->element);
-  while(pathlist->next != NULL)
-    {
-      temp = pathlist;
-      pathlist = pathlist->next;
-      free(temp);
-    }
-//}if(command)
-    return 0;
+  while (pathlist->next != NULL)
+  {
+    temp = pathlist;
+    pathlist = pathlist->next;
+    free(temp);
+  }
+  //}if(command)
 }//while
-}//sh()
+  return 0;
+} //sh
+
+
 
 //-----------------------------------------------------------------------------
 //Commands below
@@ -302,7 +304,6 @@ void list(char *dir)
   the directory passed */
 } /* list() */
 
-
 int getInput(char *strBuffer)
 {
   int length = 0;
@@ -325,21 +326,17 @@ char **inputToArray(char *input, char **args, int *argsCount)
   char *temp = strtok(buff, " ");
 
   //means there's more arguments, increment the amt of arguments
-
   while (temp)
   {
-    //printf("%s\n",temp);
     countForEndChar++;
     temp = strtok(NULL, " ");
   }
 
   args = malloc((countForEndChar + 2) * sizeof(char *));
   args[countForEndChar + 1] = '\0';
-  //argv[count+1] = NULL; //sets last index to the escape character to let exec know when to stop
+  //sets last index to the escape character to let exec know when to stop
 
-  //  input = strtok(NULL, " ");
   strcpy(buff, input);
-
   temp = strtok(buff, " ");
 
   while (temp)
@@ -351,7 +348,5 @@ char **inputToArray(char *input, char **args, int *argsCount)
     *argsCount = countOfArgs;
     temp = strtok(NULL, " ");
   }
-  //char **tempArgs = args;
-  //free (args);
   return args;
 }
