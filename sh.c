@@ -13,6 +13,8 @@
 
 int sh(int argc, char **argv, char **envp)
 {
+  //hello
+  
   char *command, *arg, *commandpath, *p, *pwd, *owd;
   int i, status, argsct;
 
@@ -68,7 +70,8 @@ int sh(int argc, char **argv, char **envp)
       printf("args[%d] = %s\n", i, args[i]);
     }
     command = args[0];
-    //printf("%s\n",args[0]);
+    // printf("got past command=");
+        //printf("%s\n",args[0]);
     //printf("%s\n",args[1]);
     //----------------------------------------------------------------------------
     /* get command line and process */
@@ -81,7 +84,7 @@ int sh(int argc, char **argv, char **envp)
 
     //printf("%d\n",strcmp("hi", "hi"));
     //printf("%s\n",args[0]);
-
+    
     if (strcmp(args[0], "which") == 0)
     {
       which(args[1], pathlist);
@@ -108,7 +111,8 @@ int sh(int argc, char **argv, char **envp)
       {
         if (strcmp(args[1], "-") == 0)
         {
-          //go to preious dir
+	        chdir("-");
+          //go to previous dir
         }
         else if (strcmp(args[1], "..") == 0)
         {
@@ -129,7 +133,8 @@ int sh(int argc, char **argv, char **envp)
 
     else if (strcmp(args[0], "list") == 0)
     {
-      printf("list command");
+      list(cwd);
+      printf("list command\n");
       //fill in code for this commandline
     }
 
@@ -146,7 +151,7 @@ int sh(int argc, char **argv, char **envp)
 
     else if (strcmp(args[0], "printenv") == 0)
     {
-      printf("printenv command");
+      printf("printenv command\n");
       //fill in code for this commandline
     }
 
@@ -194,7 +199,7 @@ int sh(int argc, char **argv, char **envp)
         if (pid == 0)
         {
           execve(absPath, args, envp);
-          printf("ERROR: EXIT");
+          //printf("ERROR: EXIT");
           exit(1);
         }
         else
@@ -299,7 +304,23 @@ void list(char *dir)
 {
   /* see man page for opendir() and readdir() and print out filenames for
   the directory passed */
-} /* list() */
+  DIR *directory;
+  struct dirent *dirEntry;
+
+  directory = opendir(dir);
+
+  if (!directory){
+    return;
+  } 
+
+  while ((dirEntry = readdir(directory)))
+  {
+    if (dirEntry->d_name[0] != '.')
+      printf("%s\n", dirEntry->d_name);
+  }
+
+  closedir(directory);
+} 
 
 /*
 void exec(){
